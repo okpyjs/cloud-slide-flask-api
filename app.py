@@ -159,11 +159,14 @@ def delete_file():
         # ファイル名が指定されていない場合はエラーレスポンスを返す
         return "ファイル名がありません", 400
 
-    file_path = filename
+    file_path = f"assets/{filename}"
 
     try:
+        df = pandas.read_csv("file_info.csv")
         # ファイルを削除する
         os.remove(file_path)
+        df = df[df["id"] != filename]
+        df.to_csv("file_info.csv", index=False, header=False)
         print(f"ファイル '{file_path}' を正常に削除しました。")
         return "ファイルが正常に削除されました"
 
