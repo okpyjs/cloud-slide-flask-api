@@ -1,0 +1,7 @@
+.venv
+other
+.gitignore
+.pre-commit-config.yaml
+setup.cfg
+*.bat
+test.py
