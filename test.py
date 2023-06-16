@@ -147,8 +147,11 @@ def retrieve_file(url):
 # # ファイルのダウンロード
 # download_file(download_url, "abc")
 
-# delete_url = "http://localhost:8080/delete"
+delete_url = "http://localhost:8080/delete"
 # delete_file(delete_url, "assets/a")
 
-retrieve_url = "http://localhost:8080/retrieve"
-retrieve_file(retrieve_url)
+# retrieve_url = "http://localhost:8080/retrieve"
+# retrieve_file(retrieve_url)
+
+resp = requests.post(delete_url, params={"all": "true"})
+print(resp)

@@ -62,6 +62,30 @@ def download_file():
         return str(e), 404
 
 
+def remove_all_files(directory):
+    """
+    指定されたディレクトリからすべてのファイルを削除します。
+
+    Args:
+        directory (str): ファイルを削除するディレクトリのパス。
+
+    Returns:
+        None
+    """
+
+    # ディレクトリ内のファイルのリストを取得します
+    file_list = os.listdir(directory)
+
+    for file_name in file_list:
+        # ファイルのパスを作成します
+        file_path = os.path.join(directory, file_name)
+        # ファイルである場合のみ削除します
+        if os.path.isfile(file_path):
+            # ファイルを削除します
+            os.remove(file_path)
+    return
+
+
 @app.route("/delete", methods=["POST"])
 def delete_file():
     """
@@ -70,8 +94,18 @@ def delete_file():
     Returns:
         str: 処理結果メッセージ
     """
+    try:
+        all_falg = request.args.get("all")
+        print(all_falg)
+        if all_falg == "true":
+            remove_all_files("assets")
+        return "remove all files", 200
+    except Exception as e:
+        print(e)
+
     # リクエストからファイル名を取得
     filename = request.args.get("filename")
+
     print(filename)
 
     if not filename:
