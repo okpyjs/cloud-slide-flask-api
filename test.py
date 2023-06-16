@@ -119,6 +119,21 @@ def delete_file(url, filename):
         print("リクエストの送信中にエラーが発生しました:", e)
 
 
+def retrieve_file(url):
+    """
+    指定されたURLからファイルを取得します。
+
+    Args:
+        url (str): 取得するファイルのURL。
+
+    Returns:
+        str: 取得したファイルのテキストデータ。
+    """
+    response = requests.get(url)  # URLにGETリクエストを送信してファイルを取得します
+    print(response.text)  # 取得したファイルのテキストデータを表示します
+    return response.text  # ファイルのテキストデータを返します
+
+
 # 例の使用法
 # アップロード用のURL
 # upload_url = "https://flask-api-35gspl32ea-uc.a.run.app/upload"
@@ -134,3 +149,6 @@ def delete_file(url, filename):
 
 # delete_url = "http://localhost:8080/delete"
 # delete_file(delete_url, "assets/a")
+
+retrieve_url = "http://localhost:8080/retrieve"
+retrieve_file(retrieve_url)

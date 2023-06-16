@@ -1,3 +1,4 @@
+import glob
 import os
 import uuid
 
@@ -94,6 +95,23 @@ def delete_file():
         # その他のエラーレスポンス
         print(f"ファイル '{file_path}' の削除中にエラーが発生しました: {e}")
         return "ファイルの削除中にエラーが発生しました", 400
+
+
+@app.route("/retrieve", methods=["GET"])
+def retrieve_files():
+    """
+    'assets' ディレクトリ内のファイルのリストを取得します。
+
+    Returns:
+        str: ファイルリストの文字列表現です。
+    """
+    try:
+        file_list = glob.glob("assets" + "/**/*", recursive=True)
+        # ファイルリストを文字列として返す (ステータスコード 200)
+        return str(file_list), 200
+    except Exception as e:
+        # エラーメッセージを返す (ステータスコード 500)
+        return "エラーが発生しました", 500
 
 
 if __name__ == "__main__":
