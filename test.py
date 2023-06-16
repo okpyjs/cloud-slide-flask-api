@@ -55,13 +55,82 @@ def download_file(url, filename):
         print("ファイルのダウンロードに失敗しました:", response.text)
 
 
+def upload_multiple_file(url, file_path_list):
+    """
+    指定したURLのエンドポイントに複数のファイルをアップロードする関数
+
+    Parameters:
+        url (str): APIエンドポイントのURL
+        file_path_list (list): アップロードするファイルのパスが含まれるリスト
+
+    Returns:
+        None
+
+    Raises:
+        requests.exceptions.RequestException: リクエストエラーが発生した場合にスローされる例外
+    """
+    try:
+        # ファイルパスリストからファイルオブジェクトのリストを作成
+        files = [("file", open(x, "rb")) for x in file_path_list]
+
+        # アップロードするファイルを含んだPOSTリクエストを送信
+        response = requests.post(url, files=files)
+
+        # レスポンスのステータスコードを確認して処理結果を出力
+        if response.status_code == 200:
+            print("ファイルが正常にアップロードされました。")
+        else:
+            print("ファイルのアップロードに失敗しました。ステータスコード:", response.status_code)
+
+    except requests.exceptions.RequestException as e:
+        # リクエストエラーが発生した場合のエラーハンドリング
+        print("リクエストの送信中にエラーが発生しました:", e)
+
+
+def delete_file(url, filename):
+    """
+    指定したURLのエンドポイントに対して、指定したファイルを削除する関数
+
+    Parameters:
+        url (str): APIエンドポイントのURL
+        filename (str): 削除するファイルの名前
+
+    Returns:
+        None
+
+    Raises:
+        requests.exceptions.RequestException: リクエストエラーが発生した場合にスローされる例外
+    """
+    try:
+        # 削除するファイル名をクエリパラメータとして設定
+        params = {"filename": filename}
+
+        # POSTリクエストを送信してファイルを削除
+        response = requests.post(url, params=params)
+
+        # レスポンスのステータスコードを確認して処理結果を出力
+        if response.status_code == 200:
+            print("ファイルが正常に削除されました。")
+        else:
+            print("ファイルの削除に失敗しました。ステータスコード:", response.status_code)
+
+    except requests.exceptions.RequestException as e:
+        # リクエストエラーが発生した場合のエラーハンドリング
+        print("リクエストの送信中にエラーが発生しました:", e)
+
+
 # 例の使用法
 # アップロード用のURL
 # upload_url = "https://flask-api-35gspl32ea-uc.a.run.app/upload"
+# upload_url = "http://localhost:8080/convert"
 # # ファイルのアップロード
-# upload_file(upload_url, "abc")
+# upload_multiple_file(upload_url, ["assets/a", "assets/b"])
 
 # ダウンロード用のURL
-download_url = "https://flask-api-35gspl32ea-uc.a.run.app/download"
-# ファイルのダウンロード
-download_file(download_url, "abc")
+# download_url = "https://flask-api-35gspl32ea-uc.a.run.app/download"
+# download_url = "http://localhost:8080/download"
+# # ファイルのダウンロード
+# download_file(download_url, "abc")
+
+# delete_url = "http://localhost:8080/delete"
+# delete_file(delete_url, "assets/a")
