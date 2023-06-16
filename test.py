@@ -57,11 +57,11 @@ def download_file(url, filename):
 
 # 例の使用法
 # アップロード用のURL
-upload_url = "http://localhost:8080/upload"
-# ファイルのアップロード
-upload_file(upload_url, "other/upload.txt")
+# upload_url = "https://flask-api-35gspl32ea-uc.a.run.app/upload"
+# # ファイルのアップロード
+# upload_file(upload_url, "abc")
 
 # ダウンロード用のURL
-download_url = "http://localhost:8080/download"
+download_url = "https://flask-api-35gspl32ea-uc.a.run.app/download"
 # ファイルのダウンロード
-download_file(download_url, "other/test.txt")
+download_file(download_url, "abc")
