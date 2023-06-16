@@ -137,9 +137,9 @@ def retrieve_file(url):
 # 例の使用法
 # アップロード用のURL
 # upload_url = "https://flask-api-35gspl32ea-uc.a.run.app/upload"
-# upload_url = "http://localhost:8080/convert"
-# # ファイルのアップロード
-# upload_multiple_file(upload_url, ["assets/a", "assets/b"])
+upload_url = "http://localhost:8080/convert"
+# ファイルのアップロード
+upload_multiple_file(upload_url, ["assets_test/a", "assets_test/b"])
 
 # ダウンロード用のURL
 # download_url = "https://flask-api-35gspl32ea-uc.a.run.app/download"
@@ -147,11 +147,16 @@ def retrieve_file(url):
 # # ファイルのダウンロード
 # download_file(download_url, "abc")
 
-delete_url = "http://localhost:8080/delete"
+# delete_url = "http://localhost:8080/delete"
 # delete_file(delete_url, "assets/a")
 
 # retrieve_url = "http://localhost:8080/retrieve"
 # retrieve_file(retrieve_url)
 
-resp = requests.post(delete_url, params={"all": "true"})
-print(resp)
+# resp = requests.post(delete_url, params={"all": "true"})
+# print(resp)
+import pandas
+
+df = pandas.read_csv("file_info.csv")
+df = df.head(0)
+df.to_csv("file_info.csv", header=True, index=False)

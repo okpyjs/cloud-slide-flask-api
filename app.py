@@ -1,7 +1,9 @@
 import glob
 import os
+import time
 import uuid
 
+import pandas
 from flask import Flask, request, send_file
 
 from utils.PPTX import PPTX
@@ -12,28 +14,70 @@ app = Flask(__name__)
 @app.route("/convert", methods=["POST"])
 def upload_files():
     """
-    ファイルをアップロードするエンドポイント
+    ファイルのアップロードを処理するエンドポイントです。
+    リクエストからファイルを取得し、指定のディレクトリに保存します。
+    保存したファイルに関する情報をデータフレームに追加し、CSVファイルに保存します。
+    その後、指定の形式に変換を行い、変換結果や使用したファイルの情報をレスポンスとして返します。
+
+    Parameters:
+        なし
 
     Returns:
-        str: レスポンスメッセージ
+        - 200: ファイルの変換が成功し、変換結果や使用したファイルの情報が含まれるレスポンス
+        - 400: リクエストにファイルが含まれていない場合のエラーレスポンス
+        - 500: アップロード中にエラーが発生した場合のエラーレスポンス
     """
     try:
         if "file" not in request.files:
-            # リクエスト内に 'file' が含まれていない場合はエラーレスポンスを返す
             return "ファイルがアップロードされていません", 400
 
+        # リクエストからファイルを取得
         files = request.files.getlist("file")
 
+        result_file_name = str(uuid.uuid4())
+        # ファイルに関する情報を格納する辞書を初期化
+        file_dict = {
+            "id": [],
+            "name": [],
+            "path": [],
+            "result_file": [],
+            "date": [],
+        }
+
+        # ファイルのアップロードと情報の収集
         for file in files:
             if file.filename == "":
-                # ファイル名が空の場合は無視する
                 continue
+            file_id = str(uuid.uuid4())
+            file.save(f"assets/{file_id}")
 
-            file.save(file.filename + "new")
+            # ファイル情報を辞書に追加
+            file_dict["id"].append(file_id)
+            file_dict["name"].append(file.filename)
+            file_dict["path"].append(f"assets/{file_id}")
+            file_dict["result_file"].append(result_file_name)
+            file_dict["date"].append(int(time.time()))
 
-        return "ファイルが正常にアップロードされました"
+        # ファイル情報をデータフレームに変換してCSVファイルに保存
+        file_df = pandas.DataFrame(file_dict)
+        file_df.to_csv("file_info.csv", header=False, index=False, mode="a")
+
+        # ファイルの変換を実行
+        convert_status = PPTX(result_file_name, file_dict["path"]).convert()
+        if convert_status:
+            return {
+                "status": "ok",
+                "result": f"assets/{result_file_name}",
+                "used_info": {
+                    "from_files": file_dict["name"],
+                    "from_file_ids": file_dict["id"],
+                    "from_file_paths": file_dict["path"],
+                },
+            }, 200
+        else:
+            return f"サーバーエラー: {str(e)}", 500
+
     except Exception as e:
-        # エラーハンドリング
         return f"アップロード中にエラーが発生しました: {str(e)}", 500
 
 
@@ -99,6 +143,9 @@ def delete_file():
         print(all_falg)
         if all_falg == "true":
             remove_all_files("assets")
+            df = pandas.read_csv("file_info.csv")
+            df = df.head(0)
+            df.to_csv("file_info.csv", header=True, index=False, mode="w")
         return "remove all files", 200
     except Exception as e:
         print(e)
