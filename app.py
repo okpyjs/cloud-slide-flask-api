@@ -4,7 +4,7 @@ import time
 import uuid
 
 import pandas
-from flask import Flask, request, send_file
+from flask import Flask, jsonify, request, send_file
 
 from utils.PPTX import PPTX
 
@@ -65,15 +65,20 @@ def upload_files():
         # ファイルの変換を実行
         convert_status = PPTX(result_file_name, file_dict["path"]).convert()
         if convert_status:
-            return {
-                "status": "ok",
-                "result": f"assets/{result_file_name}",
-                "used_info": {
-                    "from_files": file_dict["name"],
-                    "from_file_ids": file_dict["id"],
-                    "from_file_paths": file_dict["path"],
-                },
-            }, 200
+            return (
+                jsonify(
+                    {
+                        "status": "ok",
+                        "result": f"assets/{result_file_name}",
+                        "used_info": {
+                            "from_files": file_dict["name"],
+                            "from_file_ids": file_dict["id"],
+                            "from_file_paths": file_dict["path"],
+                        },
+                    }
+                ),
+                200,
+            )
         else:
             return f"サーバーエラー: {str(e)}", 500
 
@@ -127,7 +132,7 @@ def remove_all_files(directory):
         if os.path.isfile(file_path):
             # ファイルを削除します
             os.remove(file_path)
-    return
+    return "deleted all files", 200
 
 
 @app.route("/delete", methods=["POST"])
@@ -192,7 +197,7 @@ def retrieve_files():
     try:
         file_list = glob.glob("assets" + "/**/*", recursive=True)
         # ファイルリストを文字列として返す (ステータスコード 200)
-        return str(file_list), 200
+        return jsonify(file_list), 200
     except Exception as e:
         # エラーメッセージを返す (ステータスコード 500)
         return "エラーが発生しました", 500
