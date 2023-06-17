@@ -81,6 +81,7 @@ def upload_multiple_file(url, file_path_list):
             print("ファイルが正常にアップロードされました。")
         else:
             print("ファイルのアップロードに失敗しました。ステータスコード:", response.status_code)
+        return response.text
 
     except requests.exceptions.RequestException as e:
         # リクエストエラーが発生した場合のエラーハンドリング
@@ -136,10 +137,10 @@ def retrieve_file(url):
 
 # 例の使用法
 # アップロード用のURL
-# upload_url = "https://flask-api-35gspl32ea-uc.a.run.app/upload"
-upload_url = "http://localhost:8080/convert"
+upload_url = "https://flask-api-35gspl32ea-uc.a.run.app/convert"
+# upload_url = "http://localhost:8080/convert"
 # ファイルのアップロード
-upload_multiple_file(upload_url, ["assets_test/a", "assets_test/b"])
+print(upload_multiple_file(upload_url, ["assets_test/a", "assets_test/b"]))
 
 # ダウンロード用のURL
 # download_url = "https://flask-api-35gspl32ea-uc.a.run.app/download"
@@ -155,8 +156,8 @@ upload_multiple_file(upload_url, ["assets_test/a", "assets_test/b"])
 
 # resp = requests.post(delete_url, params={"all": "true"})
 # print(resp)
-import pandas
 
-df = pandas.read_csv("file_info.csv")
-df = df.head(0)
-df.to_csv("file_info.csv", header=True, index=False)
+# import pandas
+# df = pandas.read_csv("file_info.csv")
+# df = df.head(0)
+# df.to_csv("file_info.csv", header=True, index=False)
