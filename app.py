@@ -5,14 +5,22 @@ import uuid
 
 import pandas
 from flask import Flask, jsonify, request, send_file
+from flask_cors import CORS, cross_origin
 
 from utils.Drive import Drive
 from utils.PPTX import PPTX
 
 app = Flask(__name__)
+CORS(
+    app,
+    resources={
+        r".*": {"origins": ["http://localhost:3000", "http://109.123.229.249:3008"]}
+    },
+)
 
 
 @app.route("/convert", methods=["POST"])
+@cross_origin()
 def upload_files():
     """
     ファイルのアップロードを処理するエンドポイントです。

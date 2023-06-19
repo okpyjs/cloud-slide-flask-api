@@ -23,7 +23,7 @@ class Drive:
                 self.service.files()
                 .list(
                     q=f"'{folder_id}' in parents",
-                    fields="nextPageToken, files(id)",
+                    fields="nextPageToken, files(id, name)",
                     pageToken=page_token,
                 )
                 .execute()
