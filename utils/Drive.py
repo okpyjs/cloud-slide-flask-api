@@ -37,3 +37,6 @@ class Drive:
                 break
 
         return results
+
+    def merge(self, slides):
+        print(slides)
