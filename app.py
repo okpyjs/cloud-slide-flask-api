@@ -6,6 +6,7 @@ import uuid
 import pandas
 from flask import Flask, jsonify, request, send_file
 
+from utils.Drive import Drive
 from utils.PPTX import PPTX
 
 app = Flask(__name__)
@@ -195,11 +196,12 @@ def retrieve_files():
         str: ファイルリストの文字列表現です。
     """
     try:
-        file_list = glob.glob("assets" + "/**/*", recursive=True)
-        # ファイルリストを文字列として返す (ステータスコード 200)
-        return jsonify(file_list), 200
+        folder_id = os.environ.get("SLIDE_FOLDER_ID")
+        file_ids = Drive().get_file_ids(folder_id)
+        return jsonify(file_ids), 200
     except Exception as e:
         # エラーメッセージを返す (ステータスコード 500)
+        print(e)
         return "エラーが発生しました", 500
 
 

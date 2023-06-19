@@ -1,7 +1,7 @@
 from typing import List
 
+from utils.Base import Base
 
-from Base import Base
 
 class PPTX(Base):
     def __init__(self, result_file_name: str, file_list: list[str]) -> None:
@@ -11,5 +11,5 @@ class PPTX(Base):
     def convert(self):
         return "result_file_name"
 
-    def merge(self, files: List[str]):
+    def merge(self, files: list[str]):
         return
