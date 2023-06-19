@@ -1,6 +1,7 @@
 import glob
 import json
 import os
+import threading
 import time
 import uuid
 
@@ -10,6 +11,7 @@ from flask_cors import CORS, cross_origin
 
 from utils.Drive import Drive
 from utils.PPTX import PPTX
+from utils.Slide import Slide
 
 app = Flask(__name__)
 CORS(
@@ -226,9 +228,15 @@ def merge_files():
         slides = request.json["slides"]
         print(slides)
         slides = json.loads(slides)
-        # folder_id = os.environ.get("SLIDE_FOLDER_ID")
-        file_info = Drive().merge(slides)
-        return slides, 200
+        file_name = f"result_{uuid.uuid4()}.pptx"
+        threading.Thread(
+            target=Slide().merge,
+            args=(
+                [x["id"] for x in slides],
+                file_name,
+            ),
+        ).start()
+        return file_name, 200
     except Exception as e:
         # エラーメッセージを返す (ステータスコード 500)
         print(e)

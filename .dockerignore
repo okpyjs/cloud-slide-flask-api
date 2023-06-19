@@ -5,3 +5,4 @@ other
 setup.cfg
 *.bat
 test.py
+*.pptx
